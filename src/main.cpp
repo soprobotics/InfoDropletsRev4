@@ -38,7 +38,7 @@ void setup() {
 }
 
 void loop() {
-  RadioFunctions::SendMessage("\t\t\t\t\t\t\t\t\t" + GpsFunctions::Measure(true));
+  RadioFunctions::SendMessage("\t\t\t\t\t\t\t\t\t" + GpsFunctions::Measure(333,6));
 
   delay(50);
 }
