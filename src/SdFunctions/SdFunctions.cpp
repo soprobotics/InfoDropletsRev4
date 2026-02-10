@@ -3,12 +3,14 @@
 
 namespace SdFunctions {
 
-    void Setup(const int& ss){
+    bool Setup(const int& ss){
         if(!SD.begin(ss)){
             Log::Error("SD initialization failed.");
-        } else{
-            Log::Success("SD initialization done.");
+            return false;
         }
+
+        Log::Success("SD initialization done.");
+        return true;
     }
 
     void WriteFile(const String& filename, const String& content){

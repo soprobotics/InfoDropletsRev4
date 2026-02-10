@@ -4,7 +4,7 @@
 #include <SD.h>
 
 namespace SdFunctions {
-    void Setup(const int& ss); //Init SD card
+    bool Setup(const int& ss); //Init SD card
 
     void WriteFile(const String& data, const String& filename); //Write data to file
 }
