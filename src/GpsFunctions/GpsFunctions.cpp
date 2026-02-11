@@ -75,24 +75,20 @@ namespace GpsFunctions
     }
 
     bool Setup(const int& timeoutMs, const int& baudRate) { //default wait time is 15 seconds
+
         Serial.begin(baudRate);
         while(!Serial);
 
-        bool gpsDetected = false;
         unsigned long start = millis();
-        while(millis() - start < timeoutMs && !gpsDetected){
+        while(millis() - start < timeoutMs){
             SmartDelay(100);
             if(gps.charsProcessed() > 10){
-            gpsDetected = true;
+                Log::Success("GPS detected, setup done");
+                return true;
             }
         }
 
-        if(!gpsDetected){
-            Log::Error("Gps not detected");
-            return false;
-        }
-
-        Log::Success("GPS detected, setup done");
-        return true;
+        Log::Error("Gps not detected");
+        return false;
     }
 }
