@@ -27,6 +27,8 @@ namespace GpsFunctions {
     extern TinyGPSPlus gps;
 
     bool Setup(const int& timeoutMs = 15000, const int& baudRate = 9600);
+    bool SetNavMode();
+    
     String SmartDelay(const long& waitTimeMs);
     String Measure(const long& measureTime, const byte& dropletId = 99);
 }

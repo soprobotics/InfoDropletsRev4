@@ -15,6 +15,7 @@ void setup() {
   bool RadioSetupOk = RadioFunctions::Setup(2,5,868E6);
   bool SdInitOk = SdFunctions::Setup(3);
   bool GpsInitOk = GpsFunctions::Setup();
+  
   if(RadioSetupOk && (!SdInitOk || !GpsInitOk)) {
     Log::Error("Fatal Error during setup");
     RadioFunctions::End();
@@ -35,6 +36,11 @@ void setup() {
       delay(600);
     }
   }
+
+  GpsFunctions::SetNavMode(); //Proceed if navmode setup fails
+
+  Log::Success("__________ Setup complete __________");
+  delay(1000);
 }
 
 void loop() {
