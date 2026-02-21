@@ -16,12 +16,11 @@ namespace SdFunctions {
     void WriteFile(const String& filename, const String& content){
         File myFile = SD.open(filename, FILE_WRITE);
         if(!myFile){
-            String errorMessage = "Could not open file: " + filename;
-            Log::Error(errorMessage);
+            Log::Error("Could not open file: %s", filename);
         } else {
             myFile.print(content);
             myFile.close();
-            Log::Success("File write: " + filename);
+            Log::Success("File write: %s", filename);
         }
     }
 

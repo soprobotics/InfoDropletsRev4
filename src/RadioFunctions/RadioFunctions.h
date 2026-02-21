@@ -9,7 +9,7 @@ namespace RadioFunctions
 
     String ReadMessage();
 
-    void SendMessage(const String& message);
+    void SendMessage(const char* message);
 
     void End();
 }

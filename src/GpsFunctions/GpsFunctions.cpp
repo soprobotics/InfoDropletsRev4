@@ -5,16 +5,19 @@ namespace GpsFunctions
     TinyGPSPlus gps;
     GpsData gpsData;
 
-    String SmartDelay(const long& waitTimeMs){
+    String ReadFromModule(const long& waitTimeMs){
         String rawData = "";
         unsigned long start = millis();
 
         do
         {
             while (Serial.available()){
-            char rawChar = Serial.read();
-            gps.encode(rawChar);
-            rawData += rawChar;
+                char rawChar = Serial.read();
+                gps.encode(rawChar);
+                rawData += rawChar;
+                if(gpsData.hasFix && (gps.location.isUpdated())){
+                    gpsData.LastUpdateTime = millis();
+                }
             }
         } while (millis() - start < waitTimeMs);
         return rawData;
@@ -56,19 +59,25 @@ namespace GpsFunctions
 
     String Measure(const long& measureTime, const byte& dropletId) {
 
-        SmartDelay(measureTime);
+        ReadFromModule(measureTime);
         UpdateGpsData();
 
         if(!gpsData.hasTime && gpsData.hours != 0 && gpsData.minutes != 0 && gpsData.seconds != 0){
             gpsData.hasTime = true;
             gpsData.timeMsElapsed = millis();
-            Log::Log("GPS time acquired, took " + (String)gpsData.timeMsElapsed + " ms");
+            Log::Log("GPS time acquired, took %lu ms", gpsData.timeMsElapsed);
         }
 
         if(!gpsData.hasFix && gpsData.lat != 0 && gpsData.lng != 0 && gpsData.alt != 0){
             gpsData.hasFix = true;
             gpsData.fixMsElapsed = millis();
-            Log::Log("GPS fix acquired, took " + (String)gpsData.fixMsElapsed + " ms");
+            gpsData.LastUpdateTime = millis();
+            Log::Log("GPS fix acquired, took %lu ms", gpsData.fixMsElapsed);
+        }
+
+        if(gpsData.hasFix && (millis() - gpsData.LastUpdateTime > 60000)){
+            Log::Error("GPS data not updated over 90 seconds resetting");
+            asm volatile ("jmp 0x7800");
         }
 #
         return ConstructDataRow(dropletId); 
@@ -126,7 +135,7 @@ namespace GpsFunctions
                 // Check that bytes arrive in sequence as per expected ACK packet
                 if (b == ackPacket[ackByteID]) {
                     ackByteID++;
-                    Log::Debug(String(ackByteID)+". ACK byte match.");
+                    Log::Debug("%u. ACK byte match.", ackByteID);
                 }
                 else {
                     ackByteID = 0;  // Reset and look again, invalid order
@@ -171,7 +180,7 @@ namespace GpsFunctions
 
         unsigned long start = millis();
         while(millis() - start < timeoutMs){
-            SmartDelay(100);
+            ReadFromModule(100);
             if(gps.charsProcessed() > 10){
                 Log::Success("GPS detected");
                 return true;

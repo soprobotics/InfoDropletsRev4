@@ -33,10 +33,11 @@ namespace RadioFunctions
         return message;
     }
 
-    void SendMessage(const String& message){
+    void SendMessage(const char* message){
         LoRa.beginPacket();
         LoRa.print(message);
         LoRa.endPacket();
+        delay(50);
     }
 
     void End(){

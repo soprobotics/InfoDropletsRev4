@@ -5,11 +5,11 @@
 namespace Log {
     extern bool isDebugEnabled;
 
-    void Log(const String& message);
+    void Log(const char* message, ...);
 
-    void Debug(const String& message);
+    void Debug(const char* format, ...);
 
-    void Error(const String& message);
+    void Error(const char* format, ...);
 
-    void Success(const String& message);
+    void Success(const char* message, ...);
 }

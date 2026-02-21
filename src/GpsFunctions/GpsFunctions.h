@@ -19,6 +19,8 @@ struct GpsData {
 
     bool hasFix = false;
     unsigned long fixMsElapsed = 0;
+
+    unsigned long LastUpdateTime = 0;
 };
 
 namespace GpsFunctions {
@@ -29,6 +31,6 @@ namespace GpsFunctions {
     bool Setup(const int& timeoutMs = 15000, const int& baudRate = 9600);
     bool SetNavMode();
     
-    String SmartDelay(const long& waitTimeMs);
+    String ReadFromModule(const long& waitTimeMs);
     String Measure(const long& measureTime, const byte& dropletId = 99);
 }
