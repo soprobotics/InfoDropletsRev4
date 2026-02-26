@@ -5,8 +5,7 @@ namespace GpsFunctions
     TinyGPSPlus gps;
     GpsData gpsData;
 
-    String ReadFromModule(const long& waitTimeMs){
-        String rawData = "";
+    void ReadFromModule(const long& waitTimeMs){
         unsigned long start = millis();
 
         do
@@ -14,13 +13,12 @@ namespace GpsFunctions
             while (Serial.available()){
                 char rawChar = Serial.read();
                 gps.encode(rawChar);
-                rawData += rawChar;
-                if(gpsData.hasFix && (gps.location.isUpdated())){
+
+                if(gpsData.hasFix && gps.location.isUpdated()){
                     gpsData.LastUpdateTime = millis();
                 }
             }
         } while (millis() - start < waitTimeMs);
-        return rawData;
     }
 
     void UpdateGpsData(){
@@ -33,17 +31,17 @@ namespace GpsFunctions
         gpsData.alt = gps.altitude.meters();
     }
 
-    String ConstructDataRow(const byte& dropletId = 99){
-        char data[64];
+    size_t ConstructDataRow(char* buffer, size_t bufferSize, const byte& dropletId = 99){
+        if(bufferSize == 0) return 0;
 
-        char latStr[16]; 
-        char lngStr[16]; 
-        char altStr[16]; 
+        char latStr[11]; 
+        char lngStr[11]; 
+        char altStr[9]; 
         dtostrf(gpsData.lat, 0, 6, latStr); 
         dtostrf(gpsData.lng, 0, 6, lngStr); 
         dtostrf(gpsData.alt, 0, 2, altStr);
 
-        snprintf(data, sizeof(data),
+        byte bytesWritten = snprintf(buffer, bufferSize,
             "%u;%lu;%02u:%02u:%02u;%s;%s;%s",
             dropletId,
             gpsData.sats,
@@ -54,10 +52,11 @@ namespace GpsFunctions
             lngStr,
             altStr);
 
-        return data;
+        if(bytesWritten >= bufferSize)
+            return bufferSize - 1; //string truncated
     }
 
-    String Measure(const long& measureTime, const byte& dropletId) {
+    size_t Measure(char* buffer, size_t bufferSize, const long& measureTime, const byte& dropletId) {
 
         ReadFromModule(measureTime);
         UpdateGpsData();
@@ -79,8 +78,8 @@ namespace GpsFunctions
             Log::Error("GPS data not updated over 90 seconds resetting");
             asm volatile ("jmp 0x7800");
         }
-#
-        return ConstructDataRow(dropletId); 
+
+        size_t len = ConstructDataRow(buffer, bufferSize, dropletId); 
     }
 
     void sendUBX(uint8_t *MSG, uint8_t len) {

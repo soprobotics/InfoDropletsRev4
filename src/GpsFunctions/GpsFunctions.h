@@ -31,6 +31,6 @@ namespace GpsFunctions {
     bool Setup(const int& timeoutMs = 15000, const int& baudRate = 9600);
     bool SetNavMode();
     
-    String ReadFromModule(const long& waitTimeMs);
-    String Measure(const long& measureTime, const byte& dropletId = 99);
+    void ReadFromModule(const long& waitTimeMs);
+    size_t Measure(char* buffer, size_t bufferSize, const long& measureTime, const byte& dropletId);
 }

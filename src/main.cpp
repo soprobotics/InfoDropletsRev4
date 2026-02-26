@@ -44,7 +44,9 @@ void setup() {
 }
 
 void loop() {
-  RadioFunctions::SendMessage("\t\t\t\t\t\t\t\t\t" + GpsFunctions::Measure(333,6));
+  char datarow[49]; //longest possible measurement: 90;10;17:28:40;-48.268917;-116.403818;-17000.01 --> 47 chars + 1 safety + 1 null-terminator = 49
+  GpsFunctions::Measure(datarow, sizeof(datarow), 1000,deviceId);
+  Log::Log("\t\t\t\t\t\t%s", datarow);
 
   delay(50);
 }
