@@ -8,14 +8,20 @@
 
 #define EEPROM_ID_ADDR 0
 
-byte deviceId;
+int deviceId = 99;
+
+void reset() { asm volatile ("jmp 0x7800"); }
 
 void setup() {
 
   bool RadioSetupOk = RadioFunctions::Setup(2,5,868E6);
+
+  deviceId = EEPROM.read(EEPROM_ID_ADDR);
+  Log::Log("Device ID is %d", deviceId);
+
   bool SdInitOk = SdFunctions::Setup(3);
   bool GpsInitOk = GpsFunctions::Setup();
-  
+
   if(RadioSetupOk && (!SdInitOk || !GpsInitOk)) {
     Log::Error("Fatal Error during setup");
     RadioFunctions::End();
