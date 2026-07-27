@@ -5,7 +5,7 @@
 
 namespace RadioFunctions
 {
-    bool Setup(const int& ss, const int& reset, const long& frequency);
+    bool Setup(const int ss, const int reset, const long frequency);
 
     String ReadMessage();
 

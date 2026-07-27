@@ -3,8 +3,7 @@
 
 namespace RadioFunctions
 {
-    bool Setup(const int& ss, const int& reset, const long& frequency){
-        pinMode(ss, OUTPUT);
+    bool Setup(int ss,  int reset, long frequency){
         pinMode(reset, OUTPUT);
 
         LoRa.setPins(ss, reset);
