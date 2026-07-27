@@ -1,5 +1,5 @@
 #include "RadioFunctions.h"
-#include "../Log.h"
+#include "../Utils/Utils.h"
 
 namespace RadioFunctions
 {
@@ -10,10 +10,12 @@ namespace RadioFunctions
         LoRa.setPins(ss, reset);
         if(!LoRa.begin(frequency))
         {
-            Log::Error("LoRa init failed.");
+            Serial.println(F("LoRa init failed."));
             return false;
         }
-        Log::Success("LoRa started");
+        Serial.println(F("LoRa started"));
+
+        SendMessage(F("LoRa started"));
         return true;
     }
 
@@ -31,13 +33,45 @@ namespace RadioFunctions
         }
 
         return message;
+
     }
 
-    void SendMessage(const char* message){
+    void SendMessage(const __FlashStringHelper* message){
+        Utils::SelectRadio();
+
         LoRa.beginPacket();
         LoRa.print(message);
         LoRa.endPacket();
-        delay(50);
+        
+        Utils::SelectSD();
+    }
+
+    void SendPrefixedMessage(const __FlashStringHelper* prefix, const __FlashStringHelper* message)
+    {
+        Utils::SelectRadio();
+
+        LoRa.beginPacket();
+
+        LoRa.print(prefix);
+        LoRa.print(message);
+
+        LoRa.endPacket();
+
+        Utils::SelectSD();
+    }
+
+    void SendPrefixedMessageRuntime(const __FlashStringHelper* prefix, const char* message)
+    {
+        Utils::SelectRadio();
+
+        LoRa.beginPacket();
+
+        LoRa.print(prefix);
+        LoRa.print(message);
+
+        LoRa.endPacket();
+
+        Utils::SelectSD();
     }
 
     void End(){

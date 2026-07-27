@@ -9,7 +9,10 @@ namespace RadioFunctions
 
     String ReadMessage();
 
-    void SendMessage(const char* message);
+    void SendMessage(const __FlashStringHelper* message);
+    //void SendMessageRuntime(const char* message);
+    void SendPrefixedMessage(const __FlashStringHelper* prefix, const __FlashStringHelper* message);
+    void SendPrefixedMessageRuntime(const __FlashStringHelper* prefix, const char* message);
 
     void End();
 }
