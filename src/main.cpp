@@ -4,9 +4,9 @@
 #include "SdFunctions/SdFunctions.h"
 #include "RadioFunctions/RadioFunctions.h"
 #include "GpsFunctions/GpsFunctions.h"
-#include "Log.h"
+#include "Log/Log.h"
+#include "Utils/Utils.h"
 
-#define EEPROM_ID_ADDR 0
 
 int deviceId = 99;
 
@@ -14,12 +14,14 @@ void reset() { asm volatile ("jmp 0x7800"); }
 
 void setup() {
 
-  bool RadioSetupOk = RadioFunctions::Setup(2,5,868E6);
+  bool RadioSetupOk = RadioFunctions::Setup(DropletData::ss_R, 5,868E6);
+  deviceId = EEPROM.read(DropletData::DROPLET_ID_EEPROM_ADDR);
+  
 
-  deviceId = EEPROM.read(EEPROM_ID_ADDR);
-  Log::Log("Device ID is %d", deviceId);
+  Log::DebugRuntime(dropletIdMsg);
 
-  bool SdInitOk = SdFunctions::Setup(3);
+  bool SdInitOk = SdFunctions::Setup(DropletData::ss_SD);
+  Log::Debug(F("SD setup done"));
   bool GpsInitOk = GpsFunctions::Setup();
 
   if(RadioSetupOk && (!SdInitOk || !GpsInitOk)) {
