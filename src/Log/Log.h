@@ -12,5 +12,6 @@ namespace Log {
     void DebugRuntime(const char* message);
 
     void Error(const __FlashStringHelper* message);
-    void ErrorRuntime(const char* message);
+
+    void Success(const __FlashStringHelper* message);
 }

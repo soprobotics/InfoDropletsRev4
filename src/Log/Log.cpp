@@ -24,7 +24,8 @@ namespace Log {
     void Error(const __FlashStringHelper* message){
         RadioFunctions::SendPrefixedMessage(F("ERROR: "), message);
     }
-    void ErrorRuntime(const char* message){
-        RadioFunctions::SendPrefixedMessageRuntime(F("ERROR: "), message);
+
+    void Success(const __FlashStringHelper* message){
+        RadioFunctions::SendPrefixedMessage(F("SUCCESS: "), message);
     }
 }
