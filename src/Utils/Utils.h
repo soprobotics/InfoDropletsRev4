@@ -8,6 +8,14 @@ struct DropletData{
     const static int DROPLET_ID_EEPROM_ADDR = 0;
 };
 
+struct StartupData{
+    bool radioSetupOk;
+    bool sdSetupOk;
+    bool gpsSetupOk;
+    bool gpsHighAltOk;
+    byte Version;
+};
+
 namespace Utils{
     void SetupSSPins();
     void SelectSD();
