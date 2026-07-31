@@ -4,18 +4,18 @@ namespace Utils
 {
     void SetupSSPins()
     {
-        pinMode(DropletData::ss_R, OUTPUT);
-        pinMode(DropletData::ss_SD, OUTPUT);
+        pinMode(DropletData::R_ss, OUTPUT);
+        pinMode(DropletData::SD_ss, OUTPUT);
     }
 
     void SelectSD()
     {
-        digitalWrite(DropletData::ss_R, HIGH);
-        digitalWrite(DropletData::ss_SD, LOW); //active low
+        digitalWrite(DropletData::R_ss, HIGH);
+        digitalWrite(DropletData::SD_ss, LOW); //active low
     }
     void SelectRadio()
     {
-        digitalWrite(DropletData::ss_SD, HIGH);
-        digitalWrite(DropletData::ss_R, LOW); //active low
-    }
+        digitalWrite(DropletData::SD_ss, HIGH);
+        digitalWrite(DropletData::R_ss, LOW); //active low
+    }   
 }
